@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    #dragdiv{ 
+      background-color:#0A0909; 
+      height:150px; 
+      width:150px; 
+      z-index: 3;
+      position:absolute; 
+    } 
+    #stilldiv{
+      background-color: yellow;
+      height: 150px;
+      width: 150px;
+      position: absolute;
+      left: 450px;
+      top: 450px;
+      z-index: 2;
+    }
+    .ondrag{ 
+      filter:alpha(opacity=100); 
+      cursor:move; 
+    } 
+    .enddrag{ 
+      filter:alpha(opacity=100); 
+      cursor:default; 
+    } 
+    #father{ 
+      width:800px; 
+      height:800px; 
+      background-color: rgb(240, 240, 240); 
+      z-index: 1;
+    }
+    </style>
+</head>
+<body> 
+    <div id="father"> 
+    <div id="dragdiv"></div> 
+    <div id="stilldiv"></div>
+    </div>
+    <script> 
+      var dragdiv=document.getElementById("dragdiv"); 
+      var father=document.getElementById("father"); 
+      var still=document.getElementById('stilldiv');
+      var offsetx=0; 
+      var offsety=0; 
+      var draging=false; 
+      function beforeDrag(ev){ 
+          if (!draging) { 
+            draging = true; 
+            var l = dragdiv.offsetLeft; 
+            var t = dragdiv.offsetTop; 
+            offsetx = ev.clientX - l; 
+            offsety = ev.clientY - t;  
+          } 
+          else { 
+            dragdiv.className = "enddrag"; 
+            dragdiv.removeEventListener("mousemove",onDrag); 
+            draging = false; 
+            return; 
+          } 
+      } 
+      function endDrag(){ 
+        draging=false; 
+        dragdiv.className="enddrag"; 
+      } 
+      function onDrag(ev){ 
+        if (!draging) { 
+          dragdiv.className = "enddrag"; 
+          return; 
+        } 
+        else { 
+          dragdiv.className = "ondrag"; 
+          dragleft = (ev.clientX - offsetx);
+          dragtop = (ev.clientY - offsety);
+          if(dragleft<0){
+            dragdiv.style.left = 0;
+          }
+          else if(dragleft>father.offsetWidth-dragdiv.offsetWidth){
+            dragdiv.style.left = father.offsetWidth-dragdiv.offsetWidth;
+          }
+          else{
+            dragdiv.style.left = dragleft+'px';
+          }
+          if(dragtop<0){
+            dragdiv.style.top = 0;
+          }
+          else if(dragtop>father.offsetHeight-dragdiv.offsetHeight){
+              dragdiv.style.top = father.offsetHeight-dragdiv.offsetHeight;
+          }
+          else{
+            dragdiv.style.top = dragtop+'px';
+          }
+          deltaX = Math.abs(dragleft-still.offsetLeft);
+          deltaY = Math.abs(dragtop-still.offsetTop);
+          if((deltaX<still.offsetWidth)&&(deltaY<still.offsetHeight)){
+            still.style.backgroundColor = 'blue';
+          }
+          else{
+              still.style.backgroundColor = 'yellow';
+          }
+        } 
+      } 
+        dragdiv.addEventListener("mousedown",beforeDrag,true); 
+        dragdiv.addEventListener("mousemove",onDrag,false); 
+        dragdiv.addEventListener("mouseup",endDrag,true); 
+    </script> 
+    
+  </body> 
+</html>
